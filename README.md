@@ -1,0 +1,3 @@
+# Shell
+
+quickshell! yay!
