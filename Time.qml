@@ -1,21 +1,13 @@
 import Quickshell
-import Quickshell.Io
 import QtQuick
 
 Scope {
   id: root
-  property string time
+  property string time: Qt.locale('ja_JP').toString(clock.date, 'hh:mm:ss yyyy年MM月dd日 (ddd)')
 
-  Process {
-    id: clonck
-    command: ["clonck"]
-    running: true
-    stdout: SplitParser {
-      onRead: data => {
-        root.time = data
-        clonck.running = true
-      }
-    }
+  SystemClock {
+    id: clock
+    precision: SystemClock.Seconds
   }
 }
 
