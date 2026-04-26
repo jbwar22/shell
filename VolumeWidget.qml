@@ -5,11 +5,8 @@ import QtQuick
 
 Item {
   id: root
+  required property var controls
   required property var screenSettings
-
-  PwObjectTracker {
-    objects: Pipewire.defaultAudioSink ? [ Pipewire.defaultAudioSink ] : []
-  }
 
   height: root.screenSettings.barHeight
   implicitWidth: twrap.implicitWidth
@@ -20,25 +17,14 @@ Item {
     cursorShape: Qt.PointingHandCursor
     hoverEnabled: true
     onClicked: (e) => {
-      if (e.button == Qt.RightButton) {
-        if (Pipewire.defaultAudioSink) {
-          Pipewire.defaultAudioSink.audio.muted = !Pipewire.defaultAudioSink.audio.muted
-        }
-      }
-    }
-
-    function changeVolume(num) {
-      if (Pipewire.defaultAudioSink) {
-        let vol = Math.round(Pipewire.defaultAudioSink.audio.volume * 100)
-        vol += num
-        vol = Math.max(0, Math.min(100, vol))
-        Pipewire.defaultAudioSink.audio.volume = vol / 100
+      if (e.button == Qt.LeftButton) {
+        controls.setMuted(!controls.muted)
       }
     }
 
     onWheel: (e) => {
-      if (e.angleDelta.y > 0) changeVolume(5)
-      if (e.angleDelta.y < 0) changeVolume(-5)
+      if (e.angleDelta.y > 0) controls.setVolume(controls.volume + 5)
+      if (e.angleDelta.y < 0) controls.setVolume(controls.volume - 5)
     }
   }
 
@@ -52,16 +38,17 @@ Item {
     Text {
       id: text
       text: {
-        let volume = '' + Math.round((Pipewire.defaultAudioSink?.audio.volume ?? 0) * 100)
-        let muted = Pipewire.defaultAudioSink?.audio.muted
-        if (muted) {
-          volume = '-M'
-        } else if (volume == '100') {
-          volume = 'XX'
-        } else if (volume.length == 1) {
-          volume = '0' + volume
+        let vtext = "V"
+        if (controls.muted) {
+           vtext += '-M'
+        } else if (controls.volume == '100') {
+          vtext += 'XX'
+        } else if (controls.volume.length == 1) {
+          vtext += '0' + controls.volume
+        } else {
+          vtext += controls.volume
         }
-        return "V" + volume
+        return vtext
       }
 
       color: "#FFFFFF"

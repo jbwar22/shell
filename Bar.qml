@@ -14,6 +14,10 @@ Scope {
   Battery { id: batterySource }
   Title { id: titleSource }
   Rootfs { id: rootfsSource }
+  Volume { id: volumeSource }
+  Ipc {
+    volumeControls: volumeSource.controls
+  }
 
   Variants {
     model: Quickshell.screens
@@ -122,6 +126,7 @@ Scope {
             spacing: screenSettings.wgap
 
             VolumeWidget {
+              controls: volumeSource.controls
               screenSettings: screenSettings
             }
 
